@@ -156,6 +156,34 @@ function checkAppleCollision() {
   }
 }
 
+function changeInputsVelocity(direction) {
+  switch (direction) {
+    case "UP": {
+      inputsYVelocity = -1;
+      inputsXVelocity = 0;
+      break;
+    }
+    case "DOWN": {
+      inputsYVelocity = 1;
+      inputsXVelocity = 0;
+      break;
+    }
+    case "LEFT": {
+      inputsYVelocity = 0;
+      inputsXVelocity = -1;
+      break;
+    }
+    case "RIGHT": {
+      inputsYVelocity = 0;
+      inputsXVelocity = 1;
+      break;
+    }
+    default:
+      console.log("Invalid direction received!");
+      break;
+  }
+}
+
 document.body.addEventListener("keydown", keyDown);
 
 function keyDown(event) {
@@ -163,32 +191,28 @@ function keyDown(event) {
   if (event.keyCode == 38 || event.keyCode == 87) {
     //87 is w
     if (inputsYVelocity == 1) return;
-    inputsYVelocity = -1;
-    inputsXVelocity = 0;
+    changeInputsVelocity("UP");
   }
 
   //down
   if (event.keyCode == 40 || event.keyCode == 83) {
     // 83 is s
     if (inputsYVelocity == -1) return;
-    inputsYVelocity = 1;
-    inputsXVelocity = 0;
+    changeInputsVelocity("DOWN");
   }
 
   //left
   if (event.keyCode == 37 || event.keyCode == 65) {
     // 65 is a
     if (inputsXVelocity == 1) return;
-    inputsYVelocity = 0;
-    inputsXVelocity = -1;
+    changeInputsVelocity("LEFT");
   }
 
   //right
   if (event.keyCode == 39 || event.keyCode == 68) {
     //68 is d
     if (inputsXVelocity == -1) return;
-    inputsYVelocity = 0;
-    inputsXVelocity = 1;
+    changeInputsVelocity("RIGHT");
   }
 }
 
@@ -200,36 +224,31 @@ socket.addEventListener("open", () => {
 });
 
 socket.addEventListener("message", (event) => {
-  console.log(`Server Response: ${event.data}`);
+  console.log(`Server Response: ${event.data} !`);
+  const data = JSON.parse(event.data);
 
-  let randomDir = Math.floor(Math.random() * 4);
-
-  switch (randomDir) {
-    case 0: {
-      inputsYVelocity = -1;
-      inputsXVelocity = 0;
-      console.log("UP");
+  switch (data.direction) {
+    case "up": {
+      changeInputsVelocity("UP");
+      console.log("Snake moves: UP");
       break;
     }
 
-    case 1: {
-      inputsYVelocity = 1;
-      inputsXVelocity = 0;
-      console.log("DOWN");
+    case "down": {
+      changeInputsVelocity("DOWN");
+      console.log("Snake moves: DOWN");
       break;
     }
 
-    case 2: {
-      inputsYVelocity = 0;
-      inputsXVelocity = -1;
-      console.log("LEFT");
+    case "left": {
+      changeInputsVelocity("LEFT");
+      console.log("Snake moves: LEFT");
       break;
     }
 
-    case 3: {
-      inputsYVelocity = 0;
-      inputsXVelocity = 1;
-      console.log("RIGHT");
+    case "right": {
+      changeInputsVelocity("RIGHT");
+      console.log("Snake moves: RIGHT");
       break;
     }
   }
